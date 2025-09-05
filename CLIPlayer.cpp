@@ -15,13 +15,13 @@
 // 指令类型枚举
 enum class CommandType {
     PRINT_TEXT, NEWLINE, NEWLINE_NO_PROMPT, CLEAR_SCREEN, MOVE_CURSOR, SPACE,
-    STYLE_BOLD, STYLE_ITALIC, STYLE_UNDERLINE, STYLE_STRIKETHROUGH, STYLE_RESET, COLOR_RGB
+    STYLE_BOLD, STYLE_ITALIC, STYLE_UNDERLINE, STYLE_STRIKETHROUGH, STYLE_RESET, COLOR_RGB, BACKGROUND_RGB
 };
 
 // 播放指令的数据结构
 struct PlaybackAction {
     int sourceLineNumber; std::chrono::milliseconds timestamp; CommandType type;
-    std::string text_payload; int cursor_row; int cursor_col; int r = 0, g = 0, b = 0;
+    std::string text_payload; int cursor_row; int cursor_col; int r = 0, g = 0, b = 0, a = 0;
 };
 
 // 字符串替换辅助函数
@@ -145,7 +145,24 @@ bool parseFile(const std::string& filename, std::vector<PlaybackAction>& actions
                      if (payload.length() != 6 || payload.find_first_not_of("0123456789abcdefABCDEF") != std::string::npos) { std::cerr << "错误: 第 " << lineNumber << " 行颜色代码 '" << payload << "' 格式错误..." << std::endl; return false; }
                      try { int r = std::stoi(payload.substr(0, 2), nullptr, 16); int g = std::stoi(payload.substr(2, 2), nullptr, 16); int b = std::stoi(payload.substr(4, 2), nullptr, 16); actions.push_back({lineNumber, currentTimestamp, CommandType::COLOR_RGB, "", 0, 0, r, g, b}); } catch (const std::exception&) { std::cerr << "错误: 第 " << lineNumber << " 行颜色代码 '" << payload << "' 转换失败。" << std::endl; return false; }
                  }
-            } else if (command.rfind("size ", 0) == 0) std::cerr << "警告: 第 " << lineNumber << " 行：[size] 指令不被支持，将被忽略。" << std::endl;
+            } else if (command.rfind("background ",0) == 0){
+                std::string payload = command.substr(11);
+                if(payload.length() != 8 || payload.find_first_not_of("0123456789abcdefABCDEF") != std::string::npos) {
+                    std::cerr << "错误: 第 " << lineNumber << " 行背景颜色代码 '" << payload << "' 格式错误。应为8位十六进制 rrggbbaa。" << std::endl;
+                    return false;
+                }
+                try {
+                    int r = std::stoi(payload.substr(0,2),nullptr,16);
+                    int g = std::stoi(payload.substr(2,2),nullptr,16);
+                    int b = std::stoi(payload.substr(4,2),nullptr,16);
+                    int a = std::stoi(payload.substr(6,2),nullptr,16);
+                    actions.push_back({lineNumber, currentTimestamp, CommandType::BACKGROUND_RGB, "", 0,0,r,g,b,a});
+                } catch (const std::exception&) {
+                    std::cerr << "错误: 第 " << lineNumber << " 行背景颜色代码 '" << payload << "' 转换失败。" << std::endl;
+                    return false;
+                }
+            }
+            else if (command.rfind("size ", 0) == 0) std::cerr << "警告: 第 " << lineNumber << " 行：[size] 指令不被支持，将被忽略。" << std::endl;
             textStart = commandEnd + 1;
         }
     }
@@ -167,6 +184,7 @@ void executeAction(const PlaybackAction& action, const std::string& username) {
         case CommandType::STYLE_STRIKETHROUGH: std::cout << "\033[9m"; break;
         case CommandType::STYLE_RESET: std::cout << "\033[0m"; break;
         case CommandType::COLOR_RGB: std::cout << "\033[38;2;" << action.r << ";" << action.g << ";" << action.b << "m"; break;
+        case CommandType::BACKGROUND_RGB: std::cout << "\033[48;2;" << action.r << ";" << action.g << ";" << action.b << "m"; break;
     }
 }
 

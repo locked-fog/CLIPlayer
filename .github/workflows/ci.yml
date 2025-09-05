@@ -1,0 +1,41 @@
+name: Build CLI Player
+
+# 触发器：在推送到 main 分支或向 main 分支发起 Pull Request 时运行
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    # 使用矩阵策略，在多个操作系统上运行同一个任务
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    # 第1步：获取代码
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 第2步：配置 CMake
+    - name: Configure CMake
+      run: cmake -B ${{ github.workspace }}/build
+
+    # 第3步：编译项目
+    - name: Build project
+      run: cmake --build ${{ github.workspace }}/build --config Release
+
+    # 第4步：打包可执行文件
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: CLIPlayer-${{ matrix.os }}
+        path: |
+          ${{ github.workspace }}/build/CLIPlayer
+          ${{ github.workspace }}/build/Release/CLIPlayer.exe
+          ${{ github.workspace }}/build/CLIPlayer.exe
+        if-no-files-found: ignore # 忽略找不到文件的情况，因为文件名在不同平台不同

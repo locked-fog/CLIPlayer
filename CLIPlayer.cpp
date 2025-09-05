@@ -12,6 +12,10 @@
 #include <windows.h>
 #endif
 
+#define MA_ENABLE_MP3
+#define MINIAUDIO_IMPLEMENTATION
+#include "miniaudio.h"
+
 // 指令类型枚举
 enum class CommandType {
     PRINT_TEXT, NEWLINE, NEWLINE_NO_PROMPT, CLEAR_SCREEN, MOVE_CURSOR, SPACE,
@@ -42,6 +46,36 @@ void enableAnsiSupport() {
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING; SetConsoleMode(hOut, dwMode);
 #endif
 }
+
+struct AudioPlayer {
+    ma_engine engine;
+    bool initialized = false;
+
+    AudioPlayer(const std::string& music_path) {
+        ma_result result = ma_engine_init(NULL, &engine);
+        if(result != MA_SUCCESS) {
+            std::cerr << "警告: 初始化音频引擎失败, code: " << result << std::endl;
+            return;
+        }
+
+        result = ma_engine_play_sound(&engine, music_path.c_str(), NULL);
+        if(result != MA_SUCCESS) {
+            std::cerr << "警告: 播放音频文件 '" << music_path << "' 失败, code: " << result << std::endl;
+            ma_engine_uninit(&engine); // 初始化成功但播放失败，需要清理
+            return;
+        }
+
+        initialized = true;
+    }
+
+    ~AudioPlayer() {
+        if (initialized) {
+            ma_engine_uninit(&engine);
+            std::cout << "音频引擎已关闭。" << std::endl;
+        }
+    }
+};
+
 void clearScreen() { std::cout << "\033[2J\033[H" << std::flush; }
 void moveCursor(int row, int col) { std::cout << "\033[" << row << ";" << col << "H" << std::flush; }
 
@@ -66,6 +100,10 @@ bool parseFile(const std::string& filename, std::vector<PlaybackAction>& actions
 
     while (std::getline(file, line)) {
         lineNumber++;
+
+        if(!line.empty() && line.back() =='\r') {
+            line.pop_back();
+        }
         if (line.empty() || line.rfind("//", 0) == 0) continue;
         
         replaceAll(line, "&[", ESC_OPEN_BRACKET_PLACEHOLDER);
@@ -226,21 +264,43 @@ void configureWindowsConsole() {
 
 // Main 函数
 int main(int argc, char* argv[]) {
+    // configureWindowsConsole();
+    // if (argc != 2) { std::cerr << "使用方法: " << argv[0] << " <文件名.clip>" << std::endl; return 1; }
+    // enableAnsiSupport();
+
+    // std::vector<PlaybackAction> actions;
+    // std::string username = "user@cliplayer";
+    // std::string filename = argv[1];
+
+    // if (!parseFile(filename, actions, username)) return 1;
     configureWindowsConsole();
-    if (argc != 2) { std::cerr << "使用方法: " << argv[0] << " <文件名.clip>" << std::endl; return 1; }
+    if (argc < 2) {std::cerr << "使用方法: " << argv[0] << " <文件名.clip> [--music <音频文件.mp3>]" << std::endl; return 1;}
     enableAnsiSupport();
+
+    std::string filename = argv[1];
+    std::string music_path;
+    for(int i = 2;i<argc;++i) {
+        if (std::string(argv[i]) == "--music" && i+1<argc) {
+            music_path = argv[i+1];
+            break;
+        }
+    }
+
+    std::unique_ptr<AudioPlayer> player;
+    if (!music_path.empty()) {
+        player = std::make_unique<AudioPlayer>(music_path);
+    }
 
     std::vector<PlaybackAction> actions;
     std::string username = "user@cliplayer";
-    std::string filename = argv[1];
 
-    if (!parseFile(filename, actions, username)) return 1;
-    
+    if(!parseFile(filename, actions, username)) return 1;
+
     clearScreen();
     std::cout << "\033[0m" << username << "> " << std::flush;
     play(actions, username);
     std::cout << "\033[0m";
 
-    std::cout << std::endl << "播放结束。" << std::endl;
+    // std::cout << std::endl << "播放结束。" << std::endl;
     return 0;
 }

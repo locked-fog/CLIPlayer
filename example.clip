@@ -1,71 +1,71 @@
 [username]AdvancedTester
 
 // --- 第1部分: 欢迎与基础样式 ---
-[00:01.000][clear]
-[00:01.000]AdvancedTester> [bold][color 55aaff]CLI Player - 高级功能测试[color default]
-[00:02.500][newline]此脚本将测试所有高级功能。
-[00:04.000][newline][italic]正在初始化测试序列...[color default]
-[00:05.500][clear]
+[00.01.000][clear]
+[00.01.000]AdvancedTester> [bold][color 55aaff]CLI Player - 高级功能测试[color default]
+[00.02.500][newline]此脚本将测试所有高级功能。
+[00.04.000][newline][italic]正在初始化测试序列...[color default]
+[00.05.500][clear]
 
 // --- 第2部分: 换行功能测试 ---
-[00:05.500]AdvancedTester> [underline]测试 [newline] 与 [newlinenp] 的区别[color default]
-[00:06.500][newline]指令 [bold][color ffa500][newline][color default] 会模拟一个命令行提示符。
-[00:08.000][newline]例如，您可以模拟输入一条命令:
-[00:09.000][newlinenp][color 2ecc71]
-[00:09.000]AdvancedTester> ls -l
-[00:10.000][newlinenp]drwxr-xr-x  12 user  staff   384 9月 5 16:20 Documents
-[00:10.500][newlinenp]-rw-r--r--   1 user  staff  1234 9月 5 16:21 README.md
-[00:11.500][newline]现在，测试 [bold][color ffa500][newlinenp][color default]。它用于创建不带提示符的多行文本块。
-[00:13.000][newlinenp][color 3498db]
-[00:13.000]第一行
-[00:13.500][newlinenp]第二行
-[00:14.000][newlinenp]第三行 (没有出现提示符)
-[00:15.000][color default][clear]
+[00.05.500]AdvancedTester> [underline]测试 [newline] 与 [newlinenp] 的区别[color default]
+[00.06.500][newline]指令 [bold][color ffa500][newline][color default] 会模拟一个命令行提示符。
+[00.08.000][newline]例如，您可以模拟输入一条命令:
+[00.09.000][newlinenp][color 2ecc71]
+[00.09.000]AdvancedTester> ls -l
+[00.10.000][newlinenp]drwxr-xr-x  12 user  staff   384 9月 5 16:20 Documents
+[00.10.500][newlinenp]-rw-r--r--   1 user  staff  1234 9月 5 16:21 README.md
+[00.11.500][newline]现在，测试 [bold][color ffa500][newlinenp][color default]。它用于创建不带提示符的多行文本块。
+[00.13.000][newlinenp][color 3498db]
+[00.13.000]第一行
+[00.13.500][newlinenp]第二行
+[00.14.000][newlinenp]第三行 (没有出现提示符)
+[00.15.000][color default][clear]
 
 // --- 第3部分: 括号转义测试 ---
-[00:15.000]AdvancedTester> [underline]测试括号转义 &[ 和 &][color default]
-[00:16.000][newline]现在您可以像这样输出字面上的方括号: &[ 和 &]。
-[00:17.500][newline]这对于展示 .clip 文件格式本身的示例很有用。
-[00:18.800][newlinenp][mv 8 5][color e67e22]例如，颜色指令的格式是 &[color RRGGBB&]。
-[00:20.500][newlinenp][mv 9 5]移动光标的指令是 &[mv Row Col&]。
-[00:22.000][color default][clear]
+[00.15.000]AdvancedTester> [underline]测试括号转义 &[ 和 &][color default]
+[00.16.000][newline]现在您可以像这样输出字面上的方括号: &[ 和 &]。
+[00.17.500][newline]这对于展示 .clip 文件格式本身的示例很有用。
+[00.18.800][newlinenp][mv 8 5][color e67e22]例如，颜色指令的格式是 &[color RRGGBB&]。
+[00.20.500][newlinenp][mv 9 5]移动光标的指令是 &[mv Row Col&]。
+[00.22.000][color default][clear]
 
 // --- 第4部分: 复杂组合与性能测试 ---
-[00:22.000]AdvancedTester> [underline]测试复杂UI和性能[color default]
-[00:23.000][newlinenp][mv 5 10][color 8e44ad]┌──────────────────────────────────────────┐
-[00:23.200][newlinenp][mv 6 10]│                                          │
-[00:23.400][newlinenp][mv 7 10]│                                          │
-[00:23.600][newlinenp][mv 8 10]│                                          │
-[00:23.800][newlinenp][mv 9 10]└──────────────────────────────────────────┘
-[00:24.500][mv 6 12][bold]系统警报:[color default]
-[00:25.200][mv 7 12][italic][color e74c3c]性能测试已启动！
-[00:26.000][mv 8 12][color default]正在渲染...
+[00.22.000]AdvancedTester> [underline]测试复杂UI和性能[color default]
+[00.23.000][newlinenp][mv 5 10][color 8e44ad]┌──────────────────────────────────────────┐
+[00.23.200][newlinenp][mv 6 10]│                                          │
+[00.23.400][newlinenp][mv 7 10]│                                          │
+[00.23.600][newlinenp][mv 8 10]│                                          │
+[00.23.800][newlinenp][mv 9 10]└──────────────────────────────────────────┘
+[00.24.500][mv 6 12][bold]系统警报:[color default]
+[00.25.200][mv 7 12][italic][color e74c3c]性能测试已启动！
+[00.26.000][mv 8 12][color default]正在渲染...
 // 密集内容部分
-[00:26.500][mv 8 23][color 27ae60]▉
-[00:26.520]▉
-[00:26.540]▉
-[00:26.560]▉
-[00:26.580]▉
-[00:26.600]▉
-[00:26.620]▉
-[00:26.640]▉
-[00:26.660]▉
-[00:26.680]▉
-[00:26.700]▉
-[00:26.720]▉
-[00:26.740]▉
-[00:26.760]▉
-[00:26.780]▉
-[00:26.800]▉
-[00:26.820]▉
-[00:26.840]▉
-[00:26.860]▉
-[00:26.880]▉[color default]
+[00.26.500][mv 8 23][color 27ae60]▉
+[00.26.520]▉
+[00.26.540]▉
+[00.26.560]▉
+[00.26.580]▉
+[00.26.600]▉
+[00.26.620]▉
+[00.26.640]▉
+[00.26.660]▉
+[00.26.680]▉
+[00.26.700]▉
+[00.26.720]▉
+[00.26.740]▉
+[00.26.760]▉
+[00.26.780]▉
+[00.26.800]▉
+[00.26.820]▉
+[00.26.840]▉
+[00.26.860]▉
+[00.26.880]▉[color default]
 
-[00:27.500][mv 8 12][color 2ecc71]渲染完成。未发生超时错误。
+[00.27.500][mv 8 12][color 2ecc71]渲染完成。未发生超时错误。
 
-[00:29.000][clear]
+[00.29.000][clear]
 
 // --- 第5部分: 结束画面 ---
-[00:29.000]AdvancedTester> [bold][color 55aaff]所有测试已成功完成。[color default]
-[00:30.500][newline]感谢使用 CLI Player！
+[00.29.000]AdvancedTester> [bold][color 55aaff]所有测试已成功完成。[color default]
+[00.30.500][newline]感谢使用 CLI Player！

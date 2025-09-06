@@ -18,7 +18,7 @@
 
 // 指令类型枚举
 enum class CommandType {
-    PRINT_TEXT, NEWLINE, NEWLINE_NO_PROMPT, CLEAR_SCREEN, MOVE_CURSOR, SPACE,
+    PRINT_TEXT, NEWLINE, NEWLINE_NO_PROMPT, CLEAR_SCREEN, MOVE_CURSOR, 
     STYLE_BOLD, STYLE_ITALIC, STYLE_UNDERLINE, STYLE_STRIKETHROUGH, STYLE_RESET, COLOR_RGB, BACKGROUND_RGB
 };
 
@@ -165,7 +165,18 @@ bool parseFile(const std::string& filename, std::vector<PlaybackAction>& actions
             if (command == "newline") actions.push_back({lineNumber, currentTimestamp, CommandType::NEWLINE});
             else if (command == "newlinenp") actions.push_back({lineNumber, currentTimestamp, CommandType::NEWLINE_NO_PROMPT});
             else if (command == "clear") actions.push_back({lineNumber, currentTimestamp, CommandType::CLEAR_SCREEN});
-            else if (command == "space") actions.push_back({lineNumber, currentTimestamp, CommandType::SPACE});
+            else if (command.rfind("space", 0) == 0) {
+                std::istringstream cmd_iss(command);
+                std::string token;
+                int count = 1;
+
+                cmd_iss >> token;
+                if( !(cmd_iss >> count)) {
+                    count = 1;
+                }
+                if(count <1)count =1;
+                actions.push_back({lineNumber,currentTimestamp,CommandType::PRINT_TEXT, std::string(count, ' ')});
+            }
             else if (command.rfind("mv ", 0) == 0) {
                 std::string token; int r, c;
                 std::istringstream cmd_iss(command);
@@ -215,7 +226,6 @@ void executeAction(const PlaybackAction& action, const std::string& username) {
         case CommandType::NEWLINE_NO_PROMPT: std::cout << '\n'; break;
         case CommandType::CLEAR_SCREEN: clearScreen(); break;
         case CommandType::MOVE_CURSOR: moveCursor(action.cursor_row, action.cursor_col); break;
-        case CommandType::SPACE: std::cout << ' ' << std::flush; break;
         case CommandType::STYLE_BOLD: std::cout << "\033[1m"; break;
         case CommandType::STYLE_ITALIC: std::cout << "\033[3m"; break;
         case CommandType::STYLE_UNDERLINE: std::cout << "\033[4m"; break;
